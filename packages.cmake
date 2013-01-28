@@ -52,10 +52,18 @@ endfunction()
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_VER_NAME}
         )
 
-    add_custom_target(${PACKAGE_NAME}-arch
+    add_custom_target(${PACKAGE_NAME}-arch-prepare
         COMMAND cp PKGBUILD.in PKGBUILD
         COMMAND makepkg -g >> PKGBUILD
         DEPENDS ${PACKAGE_NAME}-deb-src
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        )
+
+    add_custom_target(${PACKAGE_NAME}-arch
+        COMMAND cp PKGBUILD.in PKGBUILD
+        COMMAND makepkg -g >> PKGBUILD
+        COMMAND makepkg -f
+        DEPENDS ${PACKAGE_NAME}-src-prepare
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         )
 
@@ -95,7 +103,7 @@ endfunction()
         COMMAND cp PKGBUILD ${OSC_PROJECT}/${PACKAGE_NAME}
         COMMAND cp ${PACKAGE_ARCH_INSTALL_FILE} ${OSC_PROJECT}/${PACKAGE_NAME} || exit 0
         DEPENDS ${PACKAGE_NAME}-deb-src
-        DEPENDS ${PACKAGE_NAME}-arch
+        DEPENDS ${PACKAGE_NAME}-arch-prepare
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         VERBATIM
         )
