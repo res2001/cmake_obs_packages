@@ -20,6 +20,13 @@ endfunction()
 
     configure_file(${PACKAGE_SRC_DIR}/debian/changelog.in
                    ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_VER_NAME}/debian/changelog @ONLY)
+
+    configure_file(${PACKAGE_SRC_DIR}/debian/control.in
+                   ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_VER_NAME}/debian/control @ONLY)
+
+    configure_file(${PACKAGE_SRC_DIR}/debian/copyright.in
+                   ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_VER_NAME}/debian/copyright @ONLY)
+
     configure_file(${PACKAGE_SRC_DIR}/rpm/${PACKAGE_NAME}.spec.in
                    ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}.spec @ONLY)
     configure_file(${PACKAGE_SRC_DIR}/arch/PKGBUILD.in
