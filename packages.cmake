@@ -49,6 +49,46 @@ endfunction()
             )
     endif(NOT PACKAGE_CUSTOM_SRC_PREPARE)
 
+    # для создание порта FreeBSD необходимо определение его категории
+    if(PACKAGE_FREEBSD_CATEGORY)
+        if(EXISTS "${PACKAGE_SRC_DIR}/FreeBSD/port")
+            #имя архива делаем в соответствии с правилами FreeBSD
+            set(FREEBSD_TAR_NAME  ${PACKAGE_NAME}-${PACKAGE_VERSION}.tar.gz)
+            #корень исходников портов, куда будет копироваться созданный порт
+            if(NOT FREEBSD_PORTS_DIR)
+                set(${FREEBSD_PORTS_DIR} /usr/ports)
+            endif(NOT FREEBSD_PORTS_DIR)
+
+
+            # подготовка файлов порта
+            file(COPY "${PACKAGE_SRC_DIR}/FreeBSD/port" DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/FreeBSD)
+            if(EXISTS "${PACKAGE_SRC_DIR}/FreeBSD/Makefile.in")
+                configure_file(${PACKAGE_SRC_DIR}/FreeBSD/Makefile.in
+                               ${CMAKE_CURRENT_BINARY_DIR}/FreeBSD/port/Makefile @ONLY)
+            endif()
+            add_custom_target(${PACKAGE_NAME}-freebsd-src-prepare
+                COMMAND cp ${PACKAGE_SRC_TAR_NAME} FreeBSD/${FREEBSD_TAR_NAME}
+                WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                DEPENDS ${PACKAGE_NAME}-src-prepare
+                )
+
+            #копирование файлов порта в дерево Port Collection и создание контрольных сумм
+            add_custom_target(
+                ${PACKAGE_NAME}-port-prepare
+                #копируем исходники, чтобы не засорять исходную папку результатами
+                COMMAND cp  ${CMAKE_CURRENT_BINARY_DIR}/FreeBSD/${FREEBSD_TAR_NAME} ${FREEBSD_PORTS_DIR}/distfiles/
+                COMMAND cp -r ${CMAKE_CURRENT_BINARY_DIR}/FreeBSD/port /usr/ports/${PACKAGE_FREEBSD_CATEGORY}/${PACKAGE_NAME}
+                COMMAND make -C /usr/ports/${PACKAGE_FREEBSD_CATEGORY}/${PACKAGE_NAME} makesum
+                DEPENDS ${PACKAGE_NAME}-freebsd-src-prepare)
+        endif()
+
+
+    endif(PACKAGE_FREEBSD_CATEGORY)
+
+
+
+
+
     #цель для создания бинарного deb-пакета
     add_custom_target(${PACKAGE_NAME}-deb
         COMMAND debuild -us -uc
