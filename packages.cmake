@@ -19,20 +19,31 @@ if(NOT PACKAGE_SRC_DIR)
     set(PACKAGE_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 endif(NOT PACKAGE_SRC_DIR)
 
-
-configure_file(${PACKAGE_SRC_DIR}/debian/changelog.in
+if(EXISTS ${PACKAGE_SRC_DIR}/debian/changelog.in)
+    configure_file(${PACKAGE_SRC_DIR}/debian/changelog.in
                ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_VER_NAME}/debian/changelog @ONLY)
+endif()
 
-configure_file(${PACKAGE_SRC_DIR}/debian/control.in
+if(EXISTS ${PACKAGE_SRC_DIR}/debian/control.in)
+    configure_file(${PACKAGE_SRC_DIR}/debian/control.in
                ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_VER_NAME}/debian/control @ONLY)
+endif()
 
-configure_file(${PACKAGE_SRC_DIR}/debian/copyright.in
+if(EXISTS ${PACKAGE_SRC_DIR}/debian/copyright.in)
+    configure_file(${PACKAGE_SRC_DIR}/debian/copyright.in
                ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_VER_NAME}/debian/copyright @ONLY)
+endif()
 
-configure_file(${PACKAGE_SRC_DIR}/rpm/${PACKAGE_NAME}.spec.in
+if(EXISTS ${PACKAGE_SRC_DIR}/rpm/${PACKAGE_NAME}.spec.in)
+    configure_file(${PACKAGE_SRC_DIR}/rpm/${PACKAGE_NAME}.spec.in
                ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}.spec @ONLY)
-configure_file(${PACKAGE_SRC_DIR}/arch/PKGBUILD.in
+endif()
+
+if(EXISTS ${PACKAGE_SRC_DIR}/arch/PKGBUILD.in)
+    configure_file(${PACKAGE_SRC_DIR}/arch/PKGBUILD.in
                 ${CMAKE_CURRENT_BINARY_DIR}/PKGBUILD.in @ONLY)
+endif()
+
 if(PACKAGE_ARCH_INSTALL_FILE)
     configure_file(${PACKAGE_SRC_DIR}/arch/${PACKAGE_ARCH_INSTALL_FILE}.in
                    ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_ARCH_INSTALL_FILE} @ONLY)
