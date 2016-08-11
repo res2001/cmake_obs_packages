@@ -52,8 +52,9 @@ endif(PACKAGE_ARCH_INSTALL_FILE)
 if(NOT PACKAGE_CUSTOM_SRC_PREPARE)
     add_custom_target(${PACKAGE_NAME}-src-prepare
         #копируем исходники, чтобы не засорять исходную папку результатами
+        COMMAND cmake -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_VER_NAME}
         COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/* ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_VER_NAME}
-        COMMAND chmod +x ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_VER_NAME}/debian/rules
+        COMMAND chmod -f +x ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_VER_NAME}/debian/rules || :
         COMMAND tar -caf ${PACKAGE_SRC_TAR_NAME} ${PACKAGE_VER_NAME}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         )
@@ -68,7 +69,6 @@ if(PACKAGE_FREEBSD_CATEGORY)
         if(NOT FREEBSD_PORTS_DIR)
             set(FREEBSD_PORTS_DIR $ENV{PORTSDIR})
         endif(NOT FREEBSD_PORTS_DIR)
-
 
         # подготовка файлов порта
         file(COPY "${PACKAGE_SRC_DIR}/FreeBSD/port" DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/FreeBSD)
