@@ -110,13 +110,13 @@ endif(PACKAGE_FREEBSD_CATEGORY)
 
 #цель для создания бинарного deb-пакета
 add_custom_target(${PACKAGE_NAME}-deb
-    COMMAND debuild -us -uc
+    COMMAND debuild -us -uc -Zgzip
     DEPENDS ${PACKAGE_NAME}-src-prepare
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_VER_NAME}
     )
 #цель для сборки deb-пакета с исходниками
 add_custom_target(${PACKAGE_NAME}-deb-src
-    COMMAND debuild -us -uc -S
+    COMMAND debuild -us -uc -Zgzip -S
     DEPENDS ${PACKAGE_NAME}-src-prepare
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_VER_NAME}
     )
